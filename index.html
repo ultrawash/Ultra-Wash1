@@ -58,6 +58,14 @@
       font-size: var(--font-size-label);
     }
 
+    .description {
+      font-size: 12px;
+      color: var(--color-label);
+      margin-top: 4px;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
     input[type="text"],
     input[type="date"],
     textarea,
@@ -146,6 +154,7 @@
   <input id="phone" name="phone" type="text" placeholder="+673 8221133 / 8221133" required />
 
   <label for="address">Address</label>
+  <div class="description">Please send your pinned location separately in the chat for precise pickup.</div>
   <textarea id="address" name="address" placeholder="Enter your address" rows="3" required></textarea>
 
   <label for="service">Service</label>
@@ -157,6 +166,7 @@
   </select>
 
   <label for="pickupDate">Pick Up Date</label>
+  <div class="description">Select a date on Monday or Thursday only.</div>
   <input type="date" id="pickupDate" name="pickupDate" required />
 
   <div class="terms-header" onclick="toggleTerms()">📄 Terms and Conditions (click to expand)</div>
@@ -197,8 +207,9 @@ We may outsource cleaning services without notice.
     terms.style.display = terms.style.display === 'block' ? 'none' : 'block';
   }
 
-  // Only allow Monday and Thursday
-  document.getElementById('pickupDate').addEventListener('input', function () {
+  // Only allow Monday and Thursday - validate on 'change' instead of 'input'
+  document.getElementById('pickupDate').addEventListener('change', function () {
+    if (!this.value) return; // If no date selected, skip
     const selected = new Date(this.value);
     const day = selected.getUTCDay(); // 1 = Monday, 4 = Thursday
     if (day !== 1 && day !== 4) {
