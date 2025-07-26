@@ -136,7 +136,7 @@
 </head>
 <body>
 
-<form action="https://risetotop.app.n8n.cloud/webhook/ultrawash-form" method="GET">
+<form id="customerForm" action="https://risetotop.app.n8n.cloud/webhook/ultrawash-form" method="POST">
   <h1>Ultra Wash Customer Form</h1>
 
   <label for="name">Name</label>
@@ -148,8 +148,8 @@
   <label for="address">Address</label>
   <textarea id="address" name="address" placeholder="Enter your address" rows="3" required></textarea>
   <p style="font-size: 12px; color: #666; margin-top: -12px; margin-bottom: 16px;">
-  Please send your pinned location to the admin.
-</p>
+    Please send your pinned location to the admin.
+  </p>
 
   <label for="service">Service</label>
   <select id="service" name="service" required>
@@ -162,30 +162,30 @@
   <label for="pickupDate">Pick Up Date</label>
   <input type="date" id="pickupDate" name="pickupDate" required />
   <p style="font-size: 12px; color: #666; margin-top: -12px; margin-bottom: 16px;">
-   Pick up is only available on Monday &amp; Thursday.
-</p>
+    Pick up is only available on Monday &amp; Thursday.
+  </p>
 
   <div class="terms-header" onclick="toggleTerms()">📄 Terms and Conditions (click to expand)</div>
   <div class="terms-content" id="termsText">
-The services provided by Laundry Chief are subject to your compliance with and acceptance of the terms and conditions set forth below. Your use of Laundry Chief services (“Services”) indicates your agreement to be bound by the terms and conditions contained herein.
+    The services provided by Laundry Chief are subject to your compliance with and acceptance of the terms and conditions set forth below. Your use of Laundry Chief services (“Services”) indicates your agreement to be bound by the terms and conditions contained herein.
 
-Payment  
-The customer must complete payment of the agreed upon charges on or before the completion of the Services. All payments are non-refundable.
+    Payment  
+    The customer must complete payment of the agreed upon charges on or before the completion of the Services. All payments are non-refundable.
 
-Inventory  
-Laundry Chief is not responsible for any items not listed on the Collection Slip. The Customer agrees to be bound by the content of the Collection Slip.
+    Inventory  
+    Laundry Chief is not responsible for any items not listed on the Collection Slip. The Customer agrees to be bound by the content of the Collection Slip.
 
-Garment Care  
-Laundry Chief will use reasonable efforts to maintain a high-quality cleaning service. Laundry Chief accepts no liability for damage due to normal cleaning of items with or without care instructions, or for dry clean only items, which are requested to be laundered by the Customer. Laundry Chief is not responsible for clothing bleeding, shrinking, or otherwise changing as a result of normal cleaning procedures.
+    Garment Care  
+    Laundry Chief will use reasonable efforts to maintain a high-quality cleaning service. Laundry Chief accepts no liability for damage due to normal cleaning of items with or without care instructions, or for dry clean only items, which are requested to be laundered by the Customer. Laundry Chief is not responsible for clothing bleeding, shrinking, or otherwise changing as a result of normal cleaning procedures.
 
-Loss or Damage  
-Missing or damaged items must be reported at the time of delivery. Our liability is limited to 10x the cleaning charge. We are not liable for preexisting damage, fabric weakness, or colorfast issues.
+    Loss or Damage  
+    Missing or damaged items must be reported at the time of delivery. Our liability is limited to 10x the cleaning charge. We are not liable for preexisting damage, fabric weakness, or colorfast issues.
 
-Uncollected Items  
-Laundry Chief reserves the right to dispose of uncollected items after 120 days.
+    Uncollected Items  
+    Laundry Chief reserves the right to dispose of uncollected items after 120 days.
 
-Use of Third-Party Providers  
-We may outsource cleaning services without notice.
+    Use of Third-Party Providers  
+    We may outsource cleaning services without notice.
   </div>
 
   <div class="checkbox-label">
