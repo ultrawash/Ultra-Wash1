@@ -154,7 +154,7 @@
   <input id="phone" name="phone" type="text" placeholder="+673 8221133 / 8221133" required />
 
   <label for="address">Address</label>
-  <div class="description">Please send your pinned location separately in the chat for precise pickup.</div>
+  <div class="description">Please send your pinned location separately on WhatsApp for precise pickup.</div>
   <textarea id="address" name="address" placeholder="Enter your address" rows="3" required></textarea>
 
   <label for="service">Service</label>
@@ -201,11 +201,11 @@ We may outsource cleaning services without notice.
 </form>
 
 <script>
-  // Expand/collapse Terms
-  function toggleTerms() {
-    const terms = document.getElementById('termsText');
-    terms.style.display = terms.style.display === 'block' ? 'none' : 'block';
-  }
+  // Clear the pickupDate input on page load to ensure it's empty (no default)
+  window.addEventListener('DOMContentLoaded', () => {
+    const pickupDateInput = document.getElementById('pickupDate');
+    pickupDateInput.value = '';
+  });
 
   // Only allow Monday and Thursday - validate on 'change' instead of 'input'
   document.getElementById('pickupDate').addEventListener('change', function () {
@@ -225,6 +225,12 @@ We may outsource cleaning services without notice.
       alert('Please complete all required fields and agree to the Terms & Conditions.');
     }
   });
+
+  // Expand/collapse Terms
+  function toggleTerms() {
+    const terms = document.getElementById('termsText');
+    terms.style.display = terms.style.display === 'block' ? 'none' : 'block';
+  }
 </script>
 
 </body>
