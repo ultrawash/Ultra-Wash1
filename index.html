@@ -145,10 +145,6 @@
       display: none;
     }
 
-    .spacer {
-      height: 8px;
-    }
-
     button[type="submit"],
     #getLocationBtn {
       background-color: var(--color-btn-bg);
@@ -163,6 +159,11 @@
       margin-bottom: 16px;
     }
 
+    /* Remove margin-bottom for getLocationBtn to reduce space after date */
+    #getLocationBtn {
+      margin-bottom: 0;
+    }
+
     button[type="submit"]:hover,
     #getLocationBtn:hover {
       background-color: #e05343;
@@ -171,8 +172,12 @@
     #locationStatus {
       font-size: 13px;
       color: #555;
-      margin-bottom: 16px;
+      margin-bottom: 8px; /* reduced */
       min-height: 18px;
+    }
+
+    #pickupDateSection {
+      margin-top: 4px; /* added to reduce gap */
     }
 
     /* Popup styles */
@@ -243,8 +248,11 @@
 
   <div id="addressSection" style="display:none;">
     <label for="address">Address</label>
-    <div class="description" id="addressDescription">
-      Please send your pinned location separately on WhatsApp.
+    <div class="description" id="addressDescription" style="display:block;">
+      Allow location access when prompted. If previously denied, please enable permissions in your device settings:<br><br>
+      <strong>Android:</strong> Settings &gt; Apps &gt; Your Browser &gt; Permissions &gt; Location<br>
+      <strong>iOS:</strong> Settings &gt; Privacy &gt; Location Services &gt; Your Browser<br><br>
+      Then click <strong>“Send My Exact Location”</strong> to share your coordinates.
     </div>
     <textarea id="address" name="address" placeholder="Enter your address" rows="3"></textarea>
 
@@ -258,8 +266,9 @@
   <div id="pickupDateSection" style="display:none;">
     <label for="pickupDate">Pick Up Date</label>
     <input type="date" id="pickupDate" name="pickupDate" />
-    <div class="pickup-note" id="pickupNote">📅 Pick up only available on Monday and Thursday.</div>
-    <div class="spacer"></div>
+    <div class="pickup-note" id="pickupNote">
+      <span style="font-style: normal;">📅</span> <em>Pick up only available on Monday and Thursday.</em>
+    </div>
   </div>
 
   <div id="deliveryNote" class="delivery-note">
@@ -341,29 +350,41 @@ We may outsource cleaning services without notice.
     document.getElementById('latitude').value = '';
     document.getElementById('longitude').value = '';
 
-    if (selectedService === 'Pick Up & Delivery') {
+    if (
+      selectedService === 'Pick Up & Delivery' ||
+      selectedService === 'Delivery Only' ||
+      selectedService === 'Pick Up Only'
+    ) {
       addressSection.style.display = 'block';
-      addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for precise pickup and delivery.';
-      deliveryNote.style.display = 'block';
-      pickupDateSection.style.display = 'block';
-      pickupNote.style.display = 'block';
       getLocationBtn.style.display = 'block';
-      document.getElementById('address').required = true;
-      document.getElementById('pickupDate').required = true;
-    } else if (selectedService === 'Delivery Only') {
-      addressSection.style.display = 'block';
-      addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for precise delivery.';
-      deliveryNote.style.display = 'block';
-      getLocationBtn.style.display = 'block';
-      document.getElementById('address').required = true;
-    } else if (selectedService === 'Pick Up Only') {
-      addressSection.style.display = 'block';
-      addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for pickup.';
-      pickupDateSection.style.display = 'block';
-      pickupNote.style.display = 'block';
-      getLocationBtn.style.display = 'block';
-      document.getElementById('address').required = true;
-      document.getElementById('pickupDate').required = true;
+
+      if (selectedService === 'Pick Up & Delivery') {
+        addressDescription.innerHTML = `Allow location access when prompted. If previously denied, please enable permissions in your device settings:<br><br>
+        <strong>Android:</strong> Settings &gt; Apps &gt; Your Browser &gt; Permissions &gt; Location<br>
+        <strong>iOS:</strong> Settings &gt; Privacy &gt; Location Services &gt; Your Browser<br><br>
+        Then click <strong>“Send My Exact Location”</strong> to share your coordinates.`;
+        deliveryNote.style.display = 'block';
+        pickupDateSection.style.display = 'block';
+        pickupNote.style.display = 'block';
+        document.getElementById('address').required = true;
+        document.getElementById('pickupDate').required = true;
+      } else if (selectedService === 'Delivery Only') {
+        addressDescription.innerHTML = `Allow location access when prompted. If previously denied, please enable permissions in your device settings:<br><br>
+        <strong>Android:</strong> Settings &gt; Apps &gt; Your Browser &gt; Permissions &gt; Location<br>
+        <strong>iOS:</strong> Settings &gt; Privacy &gt; Location Services &gt; Your Browser<br><br>
+        Then click <strong>“Send My Exact Location”</strong> to share your coordinates.`;
+        deliveryNote.style.display = 'block';
+        document.getElementById('address').required = true;
+      } else if (selectedService === 'Pick Up Only') {
+        addressDescription.innerHTML = `Allow location access when prompted. If previously denied, please enable permissions in your device settings:<br><br>
+        <strong>Android:</strong> Settings &gt; Apps &gt; Your Browser &gt; Permissions &gt; Location<br>
+        <strong>iOS:</strong> Settings &gt; Privacy &gt; Location Services &gt; Your Browser<br><br>
+        Then click <strong>“Send My Exact Location”</strong> to share your coordinates.`;
+        pickupDateSection.style.display = 'block';
+        pickupNote.style.display = 'block';
+        document.getElementById('address').required = true;
+        document.getElementById('pickupDate').required = true;
+      }
     }
   });
 
