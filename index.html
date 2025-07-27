@@ -164,11 +164,56 @@
     button[type="submit"]:hover {
       background-color: #e05343;
     }
+
+    /* Popup styles */
+    #thankYouPopup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #thankYouPopup .popup-content {
+      background: white;
+      border-radius: 12px;
+      padding: 32px 24px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    #thankYouPopup .checkmark {
+      font-size: 48px;
+      color: #4CAF50;
+      margin-bottom: 16px;
+    }
+    #thankYouPopup h1 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: #222;
+    }
+    #thankYouPopup p {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+      margin: 0;
+    }
+    #thankYouPopup button {
+      margin-top: 20px;
+      background-color: #ff6d5a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-<form id="customerForm" method="POST" action="https://risetotop.app.n8n.cloud/webhook/ultrawash-form" novalidate>
+<form id="customerForm" method="POST" action="https://risetotop.app.n8n.cloud/webhook/ultrawash-test" novalidate>
   <h1>Ultra Wash Customer Form</h1>
 
   <label for="name">Name</label>
@@ -236,6 +281,17 @@ We may outsource cleaning services without notice.
   <button type="submit">Submit</button>
 </form>
 
+<!-- Thank you popup -->
+<div id="thankYouPopup">
+  <div class="popup-content">
+    <div class="checkmark">✅</div>
+    <h1>Thank you for choosing UltraWash!</h1>
+    <p>Your form has been successfully submitted.<br />
+    Our team will contact you shortly via WhatsApp.</p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+</div>
+
 <script>
   function toggleTerms() {
     const terms = document.getElementById('termsText');
@@ -273,7 +329,6 @@ We may outsource cleaning services without notice.
       addressSection.style.display = 'block';
       addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for precise delivery.';
       deliveryNote.style.display = 'block';
-      // no pickup date for delivery only
       document.getElementById('address').required = true;
     } else if (selectedService === 'Pick Up Only') {
       addressSection.style.display = 'block';
@@ -285,9 +340,15 @@ We may outsource cleaning services without notice.
     }
   });
 
-  document.getElementById('customerForm').addEventListener('submit', function (e) {
+  function closePopup() {
+    document.getElementById('thankYouPopup').style.display = 'none';
+  }
+
+  document.getElementById('customerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Validate required fields & T&C
     if (!this.checkValidity()) {
-      e.preventDefault();
       alert('Please complete all required fields and agree to the Terms & Conditions.');
       return;
     }
@@ -300,9 +361,36 @@ We may outsource cleaning services without notice.
       const day = selectedDate.getDay(); // Sunday=0, Monday=1,...Thursday=4
 
       if (day !== 1 && day !== 4) {
-        e.preventDefault();
         alert('🚫 Pick up is only available on Monday and Thursday. Please choose a valid date.');
+        return;
       }
+    }
+
+    // Prepare data for submission
+    const formData = new FormData(this);
+
+    try {
+      const response = await fetch(this.action, {
+        method: this.method,
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Show thank you popup
+        document.getElementById('thankYouPopup').style.display = 'flex';
+
+        // Reset form & hide optional sections
+        this.reset();
+        document.getElementById('addressSection').style.display = 'none';
+        document.getElementById('deliveryNote').style.display = 'none';
+        document.getElementById('pickupDateSection').style.display = 'none';
+        document.getElementById('pickupNote').style.display = 'none';
+      } else {
+        alert('There was an error submitting the form. Please try again.');
+      }
+    } catch (error) {
+      alert('There was an error submitting the form. Please check your internet connection.');
+      console.error(error);
     }
   });
 </script>
