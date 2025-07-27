@@ -149,7 +149,8 @@
       height: 8px;
     }
 
-    button[type="submit"] {
+    button[type="submit"],
+    #getLocationBtn {
       background-color: var(--color-btn-bg);
       color: var(--color-btn-text);
       border: none;
@@ -159,10 +160,19 @@
       font-weight: 600;
       font-size: var(--font-size-input);
       cursor: pointer;
+      margin-bottom: 16px;
     }
 
-    button[type="submit"]:hover {
+    button[type="submit"]:hover,
+    #getLocationBtn:hover {
       background-color: #e05343;
+    }
+
+    #locationStatus {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 16px;
+      min-height: 18px;
     }
 
     /* Popup styles */
@@ -178,8 +188,8 @@
     #thankYouPopup .popup-content {
       background: white;
       border-radius: 12px;
-      padding: 24px 16px;    /* smaller padding */
-      max-width: 320px;      /* smaller width */
+      padding: 24px 16px;
+      max-width: 320px;
       text-align: center;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     }
@@ -213,7 +223,7 @@
 </head>
 <body>
 
-<form id="customerForm" method="POST" action="https://risetotop.app.n8n.cloud/webhook/ultrawash-test" novalidate>
+<form id="customerForm" method="POST" action="https://risetotop.app.n8n.cloud/webhook-test/ultrawash-form" novalidate>
   <h1>Ultra Wash Customer Form</h1>
 
   <label for="name">Name</label>
@@ -237,6 +247,12 @@
       Please send your pinned location separately on WhatsApp.
     </div>
     <textarea id="address" name="address" placeholder="Enter your address" rows="3"></textarea>
+
+    <!-- New exact location button and status -->
+    <button type="button" id="getLocationBtn" style="display:none;">📍 Send My Exact Location</button>
+    <div id="locationStatus"></div>
+    <input type="hidden" id="latitude" name="latitude" />
+    <input type="hidden" id="longitude" name="longitude" />
   </div>
 
   <div id="pickupDateSection" style="display:none;">
@@ -298,24 +314,32 @@ We may outsource cleaning services without notice.
     terms.style.display = terms.style.display === 'block' ? 'none' : 'block';
   }
 
-  document.getElementById('service').addEventListener('change', function () {
-    const selectedService = this.value;
-    const addressSection = document.getElementById('addressSection');
-    const addressDescription = document.getElementById('addressDescription');
-    const deliveryNote = document.getElementById('deliveryNote');
-    const pickupDateSection = document.getElementById('pickupDateSection');
-    const pickupNote = document.getElementById('pickupNote');
+  const serviceSelect = document.getElementById('service');
+  const addressSection = document.getElementById('addressSection');
+  const addressDescription = document.getElementById('addressDescription');
+  const deliveryNote = document.getElementById('deliveryNote');
+  const pickupDateSection = document.getElementById('pickupDateSection');
+  const pickupNote = document.getElementById('pickupNote');
+  const getLocationBtn = document.getElementById('getLocationBtn');
+  const locationStatus = document.getElementById('locationStatus');
 
-    // Reset all
+  serviceSelect.addEventListener('change', function () {
+    const selectedService = this.value;
+
+    // Reset all related UI
     addressSection.style.display = 'none';
     deliveryNote.style.display = 'none';
     pickupDateSection.style.display = 'none';
     pickupNote.style.display = 'none';
+    getLocationBtn.style.display = 'none';
+    locationStatus.textContent = '';
 
     document.getElementById('address').required = false;
     document.getElementById('pickupDate').required = false;
     document.getElementById('address').value = '';
     document.getElementById('pickupDate').value = '';
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
 
     if (selectedService === 'Pick Up & Delivery') {
       addressSection.style.display = 'block';
@@ -323,21 +347,49 @@ We may outsource cleaning services without notice.
       deliveryNote.style.display = 'block';
       pickupDateSection.style.display = 'block';
       pickupNote.style.display = 'block';
+      getLocationBtn.style.display = 'block';
       document.getElementById('address').required = true;
       document.getElementById('pickupDate').required = true;
     } else if (selectedService === 'Delivery Only') {
       addressSection.style.display = 'block';
       addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for precise delivery.';
       deliveryNote.style.display = 'block';
+      getLocationBtn.style.display = 'block';
       document.getElementById('address').required = true;
     } else if (selectedService === 'Pick Up Only') {
       addressSection.style.display = 'block';
       addressDescription.textContent = 'Please send your pinned location separately on WhatsApp for pickup.';
       pickupDateSection.style.display = 'block';
       pickupNote.style.display = 'block';
+      getLocationBtn.style.display = 'block';
       document.getElementById('address').required = true;
       document.getElementById('pickupDate').required = true;
     }
+  });
+
+  getLocationBtn.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      locationStatus.textContent = 'Geolocation is not supported by your browser.';
+      return;
+    }
+
+    locationStatus.textContent = 'Locating… please allow location access.';
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude.toFixed(6);
+        const lng = position.coords.longitude.toFixed(6);
+
+        // Set hidden inputs
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+
+        locationStatus.textContent = `Location captured: Latitude ${lat}, Longitude ${lng}`;
+      },
+      (error) => {
+        locationStatus.textContent = `Unable to retrieve location: ${error.message}`;
+      }
+    );
   });
 
   function closePopup() {
@@ -381,10 +433,12 @@ We may outsource cleaning services without notice.
 
         // Reset form & hide optional sections
         this.reset();
-        document.getElementById('addressSection').style.display = 'none';
-        document.getElementById('deliveryNote').style.display = 'none';
-        document.getElementById('pickupDateSection').style.display = 'none';
-        document.getElementById('pickupNote').style.display = 'none';
+        addressSection.style.display = 'none';
+        deliveryNote.style.display = 'none';
+        pickupDateSection.style.display = 'none';
+        pickupNote.style.display = 'none';
+        getLocationBtn.style.display = 'none';
+        locationStatus.textContent = '';
       } else {
         alert('There was an error submitting the form. Please try again.');
       }
