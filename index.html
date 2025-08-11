@@ -267,7 +267,7 @@
     <label for="pickupDate">Pick Up Date</label>
     <input type="date" id="pickupDate" name="pickupDate" />
     <div class="pickup-note" id="pickupNote">
-      <span style="font-style: normal;">📅</span> <em>Pick up only available on Monday and Saturday.</em>
+      <span style="font-style: normal;">📅</span> <em>Pick up only available on Monday and Thursday.</em>
     </div>
   </div>
 
@@ -277,29 +277,23 @@
 
   <div class="terms-header" onclick="toggleTerms()">📄 Terms and Conditions (click to expand)</div>
   <div class="terms-content" id="termsText">
-The services provided by Ultra Wash are subject to your compliance with and acceptance of the terms and conditions set forth below. Your use of Ultra Wash services (“Services”) indicates your agreement to be bound by the terms and conditions contained herein.
+The services provided by Laundry Chief are subject to your compliance with and acceptance of the terms and conditions set forth below. Your use of Laundry Chief services (“Services”) indicates your agreement to be bound by the terms and conditions contained herein.
 
 Payment  
 The customer must complete payment of the agreed upon charges on or before the completion of the Services. All payments are non-refundable.
 
-Garment Inspection  
-Each garment will be checked individually upon receipt. If stains, damage, or other issues are found, Ultra Wash will inform the customer before proceeding. Cleaning will only begin after customer approval. If the customer cannot be reached within 24 hours, Ultra Wash may proceed with standard cleaning at the customer’s risk or return the garment unwashed.
+Inventory  
+Laundry Chief is not responsible for any items not listed on the Collection Slip. The Customer agrees to be bound by the content of the Collection Slip.
 
 Garment Care  
-Ultra Wash will use reasonable efforts to maintain a high-quality cleaning service. Ultra Wash accepts no liability for damage due to normal cleaning of items with or without care instructions, or for dry clean only items which are requested to be laundered by the customer. Ultra Wash is not responsible for clothing bleeding, shrinking, or otherwise changing as a result of normal cleaning procedures.
+Laundry Chief will use reasonable efforts to maintain a high-quality cleaning service. Laundry Chief accepts no liability for damage due to normal cleaning of items with or without care instructions, or for dry clean only items, which are requested to be laundered by the Customer. Laundry Chief is not responsible for clothing bleeding, shrinking, or otherwise changing as a result of normal cleaning procedures.
 
-Stain Removal
-While every effort will be made to remove stains, complete removal cannot be guaranteed. Some stains may become more visible after cleaning.
+Loss or Damage  
+Missing or damaged items must be reported at the time of delivery. Our liability is limited to 10x the cleaning charge. We are not liable for preexisting damage, fabric weakness, or colorfast issues.
 
-Pocket Contents
-Customers are responsible for ensuring all pockets are emptied before handing over garments. Ultra Wash is not liable for loss or damage to any items left in pockets, including but not limited to coins, keys, jewelry, papers, or accessories.
+Uncollected Items  
+Laundry Chief reserves the right to dispose of uncollected items after 120 days.
 
-Loss or Damage
-Missing or damaged items must be reported at the time of delivery. Our liability is limited to five times the cleaning charge for the affected item. We are not liable for preexisting damage, fabric weakness, or colorfastness issues.
-
-Uncollected Items
-Ultra Wash reserves the right to donate or dispose of uncollected items after 30 days from the ready date.
-    
 Use of Third-Party Providers  
 We may outsource cleaning services without notice.
   </div>
@@ -437,10 +431,10 @@ We may outsource cleaning services without notice.
 
     if ((service === 'Pick Up Only' || service === 'Pick Up & Delivery') && pickupDate) {
       const selectedDate = new Date(pickupDate);
-      const day = selectedDate.getDay(); // Sunday=0, Monday=1,...Saturday=6
+      const day = selectedDate.getDay(); // Sunday=0, Monday=1,...Thursday=4
 
-      if (day === 0) {
-        alert('🚫 Pick up is only available from Monday to Saturday. Please choose a valid date.');
+      if (day !== 1 && day !== 4) {
+        alert('🚫 Pick up is only available on Monday and Thursday. Please choose a valid date.');
         return;
       }
     }
@@ -478,8 +472,3 @@ We may outsource cleaning services without notice.
 
 </body>
 </html>
-
-
-
-
-
