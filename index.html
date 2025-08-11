@@ -437,10 +437,10 @@ We may outsource cleaning services without notice.
 
     if ((service === 'Pick Up Only' || service === 'Pick Up & Delivery') && pickupDate) {
       const selectedDate = new Date(pickupDate);
-      const day = selectedDate.getDay(); // Sunday=0, Monday=1,...Thursday=4
+      const day = selectedDate.getDay(); // Sunday=0, Monday=1,...Saturday=6
 
-      if (day !== 1 && day !== 4) {
-        alert('🚫 Pick up is only available on Monday and Thursday. Please choose a valid date.');
+      if (day === 0) {
+        alert('🚫 Pick up is only available from Monday to Saturday. Please choose a valid date.');
         return;
       }
     }
@@ -478,5 +478,6 @@ We may outsource cleaning services without notice.
 
 </body>
 </html>
+
 
 
